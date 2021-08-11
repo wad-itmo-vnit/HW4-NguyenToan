@@ -12,27 +12,37 @@
 
         <div class="chatlogs" id="chatlogs">
 
-            <!-- <div class="chat friend">
+            <div class="chat friend">
                 <div class="user-photo"><img src="/static/images/Thuyen.jpg" alt="Đặng Thi B"></div>
-                <p class="chat-mess">What's up, bro!!</p>
+                <p class="chat-mess">Thank you for watching</p>
             </div>
 
-            <div class="chat self">
+            <!-- <div class="chat self">
                 <div class="user-photo"><img src="/static/images/Toan.jpg" alt="Nguyễn Văn A"></div>
                 <p class="chat-mess">What's up</p>
             </div> -->
 
         </div>
 
-        <div class="chat-form">
+        <form action="" class="chat-form" id="chat-form">
+            <input type="text" name="message" id="typing" placeholder="Type something ...">
+            <input type="submit" id="send-message" value="Send">
+        </form>
+        <!-- <div class="chat-form">
             <textarea id="typing" placeholder='Type'></textarea>
             <button id="send-message">Send</button>
-        </div>
+        </div> -->
 
     </div>
-    <!-- Socker IO -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-    <script src="/static/js/chat.js"></script>
+
+    <!-- Base chat gui -->
+    <script src="/static/js/utils.js"></script>
+
+    <!-- HTTP Methods -->
+    {% if method == 'socket' %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    {% endif %}
+        <script src="/static/js/{{ method }}.js"></script>
 
 </body>
 </html>
