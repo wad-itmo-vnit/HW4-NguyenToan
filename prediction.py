@@ -3,7 +3,7 @@ from tensorflow import keras
 from tensorflow.keras.datasets import imdb
 from keras.preprocessing import sequence
 import numpy as np
-
+import random
 
 model = keras.models.load_model('reviewFilm')
 
@@ -35,3 +35,22 @@ def predict(text):
     result = model.predict(pred) 
     #   print(result[0])
     return result[0]
+
+good_sentence = [
+  'Thank you for watching this film. If you don’t want miss good films, subscribe our channel.',
+  'Thank you for appreciating film. We hope you will enjoy it.',
+  'We are delighted to have helped you find the perfect films for your life. Thank you for trusting and choosing our films.',
+  'We are really glad that you found what films you love. We sincerely thank you for visiting and enjoy our films.',
+]
+bad_sentence = [
+  'Thank you for visiting our movies. Through the discussion, we knew we need to improve further. With the motto of always putting customer satisfaction first, we look forward to providing you with even more impressive choices.',
+  'Thank you for visiting our movies even though it has not really made you satisfied. We’re thankful your feedback as it will help us to improve in the future. Come back to us!',
+  'We sincerely thank you for watching our movies. Your feedbacks are the motivation for us to improve more and more. Once again, we look forward to serving you many more times.',
+]
+
+
+def random_message(ans):
+  if ans < .4:
+    return random.choice(bad_sentence)
+  else:
+    return random.choice(good_sentence)

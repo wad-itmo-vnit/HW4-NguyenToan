@@ -59,16 +59,17 @@ client.onreadystatechange = () => {
 }
 
 // Send message to server
-const form = document.getElementById('chat-form');
-form.onsubmit = (e) => {
-    e.preventDefault();
-    data = new FormData(form);
-    if (data.get('message')) {
+document.getElementById('send-message').onclick = () => {
+    const toSend = {"content" : document.getElementById('typing').value}
+    const jsonString = JSON.stringify(toSend);
+    if (toSend.content) {
+        client.open('POST', '/chat', true);
+        client.setRequestHeader('Content-Type', 'application/json');
+        client.send(jsonString);
+
+        console.log(jsonString);
         document.getElementById('typing').value = '';
-        showMyMessage(data.get('message'))
-        console.log('Send: ' + data.get('message'));
-        client.open('POST', '/chat');
-        client.send(data);
+        showMyMessage(toSend.content)
+        scrollDownChatWindow()
     }
 }
-

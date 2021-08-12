@@ -9,13 +9,15 @@ socket.on('message', (data) =>{
     showFriendMessage(data)
 })
 
-form.onsubmit = (data) => {
-    data.preventDefault();
-    data = new FormData(form)
-    if (data.get('message')) {
+document.getElementById('send-message').onclick = () => {
+    const toSend = {"content" : document.getElementById('typing').value}
+    // const jsonString = JSON.stringify(toSend);
+    if (toSend.content) {
+        socket.send(toSend);
+        console.log(toSend);
         document.getElementById('typing').value = '';
-        showMyMessage(data.get('message'));
-        console.log(data.get('message'));
-        socket.send(data.get('message'));
+        showMyMessage(toSend.content)
+        scrollDownChatWindow()
     }
 }
+

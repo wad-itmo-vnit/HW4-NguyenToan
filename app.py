@@ -1,12 +1,9 @@
 from flask import Flask, render_template, send_file, request, Response
 from flask_socketio import SocketIO, send, emit
-import prediction
+from prediction import predict, random_message
 import time
 import threading
-from threading import Lock, Event
 
-event_obj = Event()
-lock = Lock()
 
 
 # Auto chat
@@ -15,10 +12,7 @@ def auto_chat():
     global auto_mess
     while True:
         time.sleep(10)
-        # lock.acquire()
-        auto_mess.append('Please leave a review for this movie!')
-        # event_obj.set()
-        # lock.release()
+        auto_mess.append('Please leave a review for this film!')
         
 autoChat = threading.Thread(target=auto_chat)
 autoChat.start()
@@ -26,21 +20,17 @@ autoChat.start()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
+sending_to_socket = {}
 
 # Chatbot answering route
 @app.route('/chat', methods=[ 'POST'])
 def chat():
-    req = request.form.get('message')
-    print(f'\n\n{type(req)}\n\n')
-    ans = prediction.predict(req)
-    print(f'\n\n{ans}\n\n')
-    if ans < .3:
-        print("\n\n" ,ans, "\n\n")
-        return 'I hate this movie too'
-    else:
-        print("\n\n" ,ans, "\n\n")
-        return 'Yes, this movie is very good'
-    
+    req = request.json
+    print(f'\n\n{req}\n\n')
+    score = predict(req['content'])
+    ans = random_message(score)
+    return ans
+
 
 # Routes for short polling method
 @app.route('/short')
@@ -75,18 +65,40 @@ def longChat():
 # Socket routes
 @app.route('/socket', methods = ['POST', 'GET'])
 def socket():
+    global auto_mess
+    auto_mess.clear()
     return render_template('chatbox.html', method="socket")
     
+
+@socketio.on('connect')
+def on_connect(data):
+    sending_to_socket[request.sid] = True
+    auto = threading.Thread(target=autochat_to_socket, args=(request.sid,))
+    auto.start()
+
+@socketio.on('disconnect')
+def on_disconnect(data):
+    sending_to_socket[request.sid] = False
+
 @socketio.on('message')
-def handle_message(data):
-    response = prediction.predict(data) # Model AI 
-    if response < .4:
-        print("\n\n" ,response, "\n\n")
-        send('I hate this movie too')
-    else:
-        print("\n\n" ,response, "\n\n")
-        send('Yes, this movie is very good')
-    
+def on_message(data, methods=['GET', 'POST']):
+    print(f"\n\n{data}\n\n")
+    score = predict(data['content'])
+    ans = random_message(score)
+    socketio.send(ans, room=request.sid)
+
+
+def autochat_to_socket(sid):
+    while sending_to_socket[sid]:
+        try:
+            ans = auto_mess.pop()
+            socketio.send( ans, to=sid)
+        except:
+            pass  
+
+
+
+
     
 if __name__ == '__main__':
     socketio.run(app, host='localhost', port=5000, debug=True)
