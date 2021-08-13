@@ -4,6 +4,10 @@
 1. Clone this repo: `git clone https://github.com/wad-itmo-vnit/HW4-NguyenToan`
 2. Install requirement packages: `pip install -r requirements.txt`
 3. Run the server: `python app.py`
+4. Display on browser:
+    - [Short polling](http://localhost:5000/short)
+    - [Long polling](http://localhost:5000/long)
+    - [Websocket](http://localhost:5000/socket)
 ### Chatbot discription
 **Chatbot analyzes movie reviews and gives appropriate behavior sentences for each type of customer attitude**
 1. Every 10 seconds the server will invite customers to leave a review of the movie they have watched.
@@ -19,5 +23,5 @@
     > - Thank you for visiting our movies even though it has not really made you satisfied. We’re thankful your feedback as it will help us to improve in the future. Come back to us!
     > - We sincerely thank you for watching our movies. Your feedbacks are the motivation for us to improve more and more. Once again, we look forward to serving you many more times.
 
-**Since this is a simple demo version, the accuracy rate of the analysis results is only about 80%.**
+**Since this is a simple demo version, the accuracy of the analysis results is only about 80%.**
 
